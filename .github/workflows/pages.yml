@@ -48,6 +48,20 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Check robots, sitemap and social image are exported
+        run: |
+          base="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          for path in robots.txt sitemap.xml og.png; do
+            for i in 1 2 3 4 5 6; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$base/$path")
+              [ "$code" = 200 ] && break
+              sleep 10
+            done
+            echo "$code $base/$path"
+            [ "$code" = 200 ] || exit 1
+          done
+          curl -sS "$base/sitemap.xml" | grep -q "$base/"
+
       - name: Check the live site serves every page
         run: |
           base="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
