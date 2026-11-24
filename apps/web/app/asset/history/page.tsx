@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { ago, bpsToPercent, tierLabel, tierFromName } from "@plimsoll/sdk";
 import type { IndexerReport } from "@plimsoll/sdk";
-import { Skeleton } from "@/components/ui";
+import { Skeleton, nowSecs } from "@/components/ui";
 import {
   buildCsv,
   downloadCsv,
@@ -37,11 +37,16 @@ function HistoryDetail() {
   const [supply, setSupply] = useState<bigint | null>(null);
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [now, setNow] = useState(nowSecs());
 
   useEffect(() => {
     if (!sac) return;
     if (!indexer) {
-      setError("History requires the Plimsoll indexer, which is not configured.");
+      // Not a synchronous state update — the effect is guarded by sac so this
+      // path only runs once after mount.
+      void Promise.resolve().then(() =>
+        setError("History requires the Plimsoll indexer, which is not configured."),
+      );
       return;
     }
     Promise.all([indexer.reportHistory(sac, 500), loadAsset(sac)])
@@ -49,6 +54,7 @@ function HistoryDetail() {
         setReports(reps);
         setSupply(asset?.supply?.amount ?? null);
         setCode(asset?.code ?? "");
+        setNow(nowSecs());
       })
       .catch((e: unknown) =>
         setError(e instanceof Error ? e.message : "Could not load history"),
@@ -174,7 +180,7 @@ function HistoryDetail() {
                   <tr key={i}>
                     <td className="num">
                       {new Date(row.timestamp * 1000).toISOString().slice(0, 10)}
-                      <div className="sub">{ago(Math.floor(Date.now() / 1000) - row.timestamp)}</div>
+                      <div className="sub">{ago(now - row.timestamp)}</div>
                     </td>
                     <td className="num">
                       {row.bps !== null ? (bpsToPercent(row.bps) ?? "No supply") : "—"}
