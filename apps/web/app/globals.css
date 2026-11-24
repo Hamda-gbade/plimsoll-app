@@ -450,6 +450,11 @@ label {
   color: var(--ink-3);
   font-size: 0.85rem;
 }
+.field-error {
+  font-weight: 400;
+  color: var(--bad);
+  font-size: 0.85rem;
+}
 input,
 select,
 textarea {
@@ -508,6 +513,10 @@ button:disabled {
 .notice-info {
   background: var(--sea-bg);
   color: var(--sea);
+}
+.notice-warn {
+  background: var(--warn-bg);
+  color: var(--warn);
 }
 .notice a {
   color: inherit;
