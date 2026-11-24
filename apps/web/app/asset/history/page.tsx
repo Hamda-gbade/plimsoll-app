@@ -56,15 +56,10 @@ function HistoryDetail() {
         setCode(asset?.code ?? "");
         setNow(nowSecs());
       })
-      .catch((e: unknown) =>
-        setError(e instanceof Error ? e.message : "Could not load history"),
-      );
+      .catch((e: unknown) => setError(e instanceof Error ? e.message : "Could not load history"));
   }, [sac]);
 
-  const allRows = useMemo(
-    () => (reports ? toHistoryRows(reports, supply) : []),
-    [reports, supply],
-  );
+  const allRows = useMemo(() => (reports ? toHistoryRows(reports, supply) : []), [reports, supply]);
   const rows = useMemo(() => filterByRange(allRows, range), [allRows, range]);
 
   const applyRange = useCallback(() => {
@@ -116,7 +111,13 @@ function HistoryDetail() {
       </p>
 
       <div
-        style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end", marginTop: 16 }}
+        style={{
+          display: "flex",
+          gap: 12,
+          flexWrap: "wrap",
+          alignItems: "flex-end",
+          marginTop: 16,
+        }}
       >
         <label style={{ fontWeight: 600, fontSize: "0.93rem", display: "grid", gap: 4 }}>
           From
@@ -160,8 +161,8 @@ function HistoryDetail() {
       ) : (
         <>
           <p className="sub" style={{ marginTop: 8 }}>
-            Showing {rows.length} report{rows.length !== 1 ? "s" : ""} from{" "}
-            {toISODate(range.from)} to {toISODate(range.to)}.
+            Showing {rows.length} report{rows.length !== 1 ? "s" : ""} from {toISODate(range.from)}{" "}
+            to {toISODate(range.to)}.
           </p>
           <HistoryChart rows={rows} />
           <div className="table-wrap" style={{ marginTop: 16 }}>
@@ -281,7 +282,14 @@ function HistoryChart({ rows }: { rows: ChartRow[] }) {
         strokeWidth="1"
       />
       {/* Y-axis label */}
-      <text x={PAD.left - 6} y={PAD.top + plotH / 2} textAnchor="end" fontSize="10" fill="var(--ink-3)" dominantBaseline="middle">
+      <text
+        x={PAD.left - 6}
+        y={PAD.top + plotH / 2}
+        textAnchor="end"
+        fontSize="10"
+        fill="var(--ink-3)"
+        dominantBaseline="middle"
+      >
         BPS
       </text>
       {/* Data line */}

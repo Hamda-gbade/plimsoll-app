@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildCsv,
-  filterByRange,
-  parseDateRange,
-  toHistoryRows,
-  toISODate,
-} from "../lib/history";
+import { buildCsv, filterByRange, parseDateRange, toHistoryRows, toISODate } from "../lib/history";
 import type { IndexerReport } from "@plimsoll/sdk";
 
 const makeReport = (overrides: Partial<IndexerReport> = {}): IndexerReport => ({

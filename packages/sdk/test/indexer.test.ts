@@ -77,7 +77,10 @@ describe("IndexerClient webhook methods", () => {
   it("registerWebhook POSTs to /v1/webhooks and returns the webhook", async () => {
     const f = vi.fn(async () => json(WEBHOOK));
     const c = new IndexerClient("http://x", f as unknown as typeof fetch);
-    const result = await c.registerWebhook({ url: "https://example.com/hook", threshold_bps: 10000 });
+    const result = await c.registerWebhook({
+      url: "https://example.com/hook",
+      threshold_bps: 10000,
+    });
     expect(result).toEqual(WEBHOOK);
     const call = f.mock.calls[0] as [string, RequestInit];
     expect(call[0]).toBe("http://x/v1/webhooks");
@@ -108,6 +111,9 @@ describe("IndexerClient webhook methods", () => {
   it("deleteWebhook throws IndexerError on non-ok response", async () => {
     const f = async () => json({ error: "not found" }, 404);
     const c = new IndexerClient("http://x", f as unknown as typeof fetch);
-    await expect(c.deleteWebhook("bad")).rejects.toMatchObject({ name: "IndexerError", status: 404 });
+    await expect(c.deleteWebhook("bad")).rejects.toMatchObject({
+      name: "IndexerError",
+      status: 404,
+    });
   });
 });

@@ -188,7 +188,10 @@ export class IndexerClient {
     return this.get(`/healthz`, opts);
   }
 
-  async registerWebhook(params: RegisterWebhookParams, opts?: RequestOptions): Promise<IndexerWebhook> {
+  async registerWebhook(
+    params: RegisterWebhookParams,
+    opts?: RequestOptions,
+  ): Promise<IndexerWebhook> {
     return this.post<IndexerWebhook>("/v1/webhooks", params, opts);
   }
 

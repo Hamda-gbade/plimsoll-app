@@ -53,7 +53,9 @@ export default function SettingsPage() {
   const indexerAvailable = indexer !== null;
 
   useEffect(() => {
-    loadAssets().then(setAssets).catch(() => setAssets([]));
+    loadAssets()
+      .then(setAssets)
+      .catch(() => setAssets([]));
     if (indexer) {
       indexer
         .listWebhooks()

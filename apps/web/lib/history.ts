@@ -56,8 +56,7 @@ export function toHistoryRows(
 ): HistoryRow[] {
   return reports.map((r) => {
     const amount = BigInt(r.amount);
-    const bps =
-      supply && supply > 0n ? Number((amount * 10_000n) / supply) : null;
+    const bps = supply && supply > 0n ? Number((amount * 10_000n) / supply) : null;
     return {
       timestamp: Math.floor(new Date(r.as_of).getTime() / 1000),
       bps,
