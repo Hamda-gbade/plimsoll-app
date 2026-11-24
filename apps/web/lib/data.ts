@@ -4,6 +4,7 @@ import {
   Tier,
   tierFromName,
   type IndexerAsset,
+  type IndexerReporter,
   type IndexerSource,
   type IndexerToml,
 } from "@plimsoll/sdk";
@@ -155,6 +156,16 @@ export async function loadFromChain(sac: string): Promise<AssetView | null> {
     toml: null,
     source: "chain",
   };
+}
+
+/**
+ * Every registered reporter, or null when no indexer is configured: the
+ * registry is keyed by address, so the chain can answer "what is this address"
+ * but cannot list the addresses that have been registered.
+ */
+export async function loadReporters(): Promise<IndexerReporter[] | null> {
+  if (!indexer) return null;
+  return indexer.reporters();
 }
 
 /** All assets: from the indexer when configured, otherwise from the chain. */
