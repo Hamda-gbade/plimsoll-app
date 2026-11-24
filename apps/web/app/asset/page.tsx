@@ -30,6 +30,7 @@ import {
   statusOf,
 } from "@/components/ui";
 import { config, explorer } from "@/lib/config";
+import { embedCode } from "@/lib/badge";
 import {
   contracts,
   indexer,
@@ -240,6 +241,8 @@ function AssetDetail() {
 
       <h2>What the issuer publishes</h2>
       <IssuerToml asset={asset} />
+
+      <EmbedBadge sac={asset.sac} />
     </>
   );
 }
@@ -666,5 +669,34 @@ function IssuerToml({ asset }: { asset: AssetView }) {
         {cached ? "Read by the Plimsoll indexer." : "Checked live from your browser."}
       </p>
     </div>
+  );
+}
+
+function EmbedBadge({ sac }: { sac: string }) {
+  const [copied, setCopied] = useState(false);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const snippet = embedCode(sac, { origin, basePath: config.basePath });
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(snippet);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <section className="card mt" aria-labelledby="embed-h">
+      <h2 id="embed-h">Embed badge</h2>
+      <p className="sub">
+        Copy this snippet to show a live reserve-coverage badge that links back to this asset page.
+      </p>
+      <pre style={{ overflowX: "auto", margin: "8px 0" }}>{snippet}</pre>
+      <button type="button" className="secondary" onClick={copy}>
+        {copied ? "Copied" : "Copy embed code"}
+      </button>
+    </section>
   );
 }
