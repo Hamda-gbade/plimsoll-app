@@ -20,6 +20,7 @@ import {
   type TomlCheck,
 } from "@plimsoll/sdk";
 import {
+  CopyButton,
   Gauge,
   Skeleton,
   Stat,
@@ -144,6 +145,7 @@ function AssetDetail() {
             >
               {shortAddress(asset.issuer, 6)}
             </a>
+            <CopyButton value={asset.issuer} label="issuer address" />
             {asset.toml?.home_domain ? <> · {asset.toml.home_domain}</> : null}
             {asset.toml?.org_name ? <> · {asset.toml.org_name}</> : null}
           </div>
@@ -196,7 +198,12 @@ function AssetDetail() {
         />
         <Stat
           label="Asset contract"
-          value={<span className="mono">{shortAddress(asset.sac, 6)}</span>}
+          value={
+            <>
+              <span className="mono">{shortAddress(asset.sac, 6)}</span>{" "}
+              <CopyButton value={asset.sac} label="asset contract id" />
+            </>
+          }
           sub={
             <a href={explorer.contract(asset.sac)} target="_blank" rel="noreferrer">
               explorer
@@ -318,7 +325,8 @@ function ReportRow({
           rel="noreferrer"
         >
           {shortAddress(report.reporter)}
-        </a>
+        </a>{" "}
+        <CopyButton value={report.reporter} label="reporter address" />
         {report.reporter === issuer ? <div className="sub">issuer account</div> : null}
         <div className="sub">
           <Provenance view={report} />
@@ -330,6 +338,10 @@ function ReportRow({
             <a href={safeHref(report.docUri)} target="_blank" rel="noreferrer">
               Open
             </a>
+            <div>
+              Hash <span className="mono">{shortAddress(report.docHash, 8)}</span>{" "}
+              <CopyButton value={report.docHash} label="document hash" />
+            </div>
             <DocCheck uri={report.docUri} hash={report.docHash} />
           </>
         ) : (
@@ -554,7 +566,8 @@ function SupplySection({
         <a className="mono" href={explorer.account(poster)} target="_blank" rel="noreferrer">
           {shortAddress(poster)}
         </a>
-        . Breakdown hash <code className="break">{hash}</code>
+        . Breakdown hash <code className="break">{hash}</code>{" "}
+        <CopyButton value={hash} label="breakdown hash" />
       </p>
       {breakdown ? (
         <div className="table-wrap">

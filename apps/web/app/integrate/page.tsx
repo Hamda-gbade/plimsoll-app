@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TESTNET } from "@plimsoll/sdk";
+import { CopyButton } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Integrate" };
 
@@ -148,15 +149,24 @@ export default function IntegratePage() {
           <tbody>
             <tr>
               <td>Coverage ledger</td>
-              <td className="mono break">{TESTNET.coverageLedgerId}</td>
+              <td className="mono break">
+                {TESTNET.coverageLedgerId}{" "}
+                <CopyButton value={TESTNET.coverageLedgerId} label="coverage ledger id" />
+              </td>
             </tr>
             <tr>
               <td>Reporter registry</td>
-              <td className="mono break">{TESTNET.reporterRegistryId}</td>
+              <td className="mono break">
+                {TESTNET.reporterRegistryId}{" "}
+                <CopyButton value={TESTNET.reporterRegistryId} label="reporter registry id" />
+              </td>
             </tr>
             <tr>
               <td>Covered vault (example)</td>
-              <td className="mono break">{TESTNET.coveredVaultId}</td>
+              <td className="mono break">
+                {TESTNET.coveredVaultId}{" "}
+                <CopyButton value={TESTNET.coveredVaultId} label="covered vault id" />
+              </td>
             </tr>
           </tbody>
         </table>
