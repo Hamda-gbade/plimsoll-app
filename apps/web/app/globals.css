@@ -523,6 +523,118 @@ button:disabled {
   font-weight: 600;
 }
 
+/* wallet picker (lib/wallet.ts) */
+.wallet-dialog-open {
+  overflow: hidden;
+}
+.wallet-dialog {
+  width: min(480px, calc(100vw - 32px));
+  max-height: min(640px, calc(100vh - 48px));
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 35%);
+}
+.wallet-dialog::backdrop {
+  background: rgb(15 29 43 / 55%);
+}
+.wallet-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 0;
+}
+.wallet-dialog-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+.wallet-dialog-close {
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  padding: 6px 8px;
+  font-size: 0.9rem;
+}
+.wallet-dialog-body {
+  padding: 10px 20px 20px;
+}
+.wallet-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wallet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+.wallet-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+.wallet-option:not(:disabled):hover {
+  border-color: var(--ink-3);
+}
+.wallet-option:disabled {
+  opacity: 1;
+  border-style: dashed;
+}
+.wallet-badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--muted-bg);
+  color: var(--ink-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.wallet-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.wallet-name {
+  font-weight: 650;
+}
+.wallet-hint {
+  color: var(--ink-3);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+.wallet-state {
+  margin-left: auto;
+  color: var(--ink-3);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.wallet-install {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 4px;
+}
+.wallet-dialog-foot {
+  margin: 14px 0 0;
+}
+
 pre {
   background: var(--ink);
   color: #e8edf2;

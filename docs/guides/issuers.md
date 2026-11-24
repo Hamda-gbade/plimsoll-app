@@ -7,14 +7,15 @@ nobody else can post at your tier.
 ## Before you start
 
 * Your asset is listed. If not, use the [List page](https://plimsoll-app-gths-amber.vercel.app/list/); anyone can list.
-* You can sign with your **issuer account** in Freighter. If the issuer key is
-  in cold storage, sign the prepared transaction offline instead (see below).
+* You can sign with your **issuer account** in any supported wallet (Freighter,
+  xBull, Albedo, Lobstr or Hana). If the issuer key is in cold storage, sign the
+  prepared transaction offline instead (see below).
 * Your statement is published at a stable URL.
 
 ## Post a report from the app
 
-1. Open **Post a report** and connect Freighter with the issuer account. The
-   page shows **Will post as Issuer-signed**.
+1. Open **Post a report** and connect a supported wallet with the issuer
+   account. The page shows **Will post as Issuer-signed**.
 2. Pick the asset.
 3. Enter **Reserves held** in units of the asset. For a dollar stablecoin with
    $1,020,000 in reserves, enter `1,020,000`.
