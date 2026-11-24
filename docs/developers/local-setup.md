@@ -54,8 +54,9 @@ Without `NEXT_PUBLIC_INDEXER_URL` the app reads straight from the contracts.
 
 ## Signing transactions
 
-Install [Freighter](https://www.freighter.app/), switch it to **Testnet**, and
-fund the account with Friendbot:
+Install a supported wallet ([Freighter](https://www.freighter.app/), xBull,
+Albedo, Lobstr or Hana), switch it to **Testnet**, and fund the account with
+Friendbot:
 
 ```bash
 curl "https://friendbot.stellar.org/?addr=<YOUR_G_ADDRESS>"
