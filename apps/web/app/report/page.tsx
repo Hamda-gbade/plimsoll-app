@@ -6,12 +6,13 @@ import {
   Role,
   Tier,
   describeError,
-  parseUnits,
+  formatUnits,
   sha256Hex,
   tierLabel,
 } from "@plimsoll/sdk";
 import { explorer } from "@/lib/config";
 import { contracts, loadAssets, type AssetView } from "@/lib/data";
+import { checkAmount } from "@/lib/report-preview";
 import { WalletError, connectWallet, signXdr } from "@/lib/wallet";
 
 type Status =
@@ -86,11 +87,15 @@ export default function ReportPage() {
     }
   };
 
+  const selected = assets.find((a) => a.sac === sac);
+  const amountCheck = checkAmount(amount, selected?.supply?.amount, selected?.code);
+  const preview = amountCheck.kind === "valid" ? amountCheck.preview : null;
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!address || !tier) return;
+    if (!address || !tier || amountCheck.kind !== "valid" || preview?.warning) return;
     try {
-      const units = parseUnits(amount);
+      const units = amountCheck.units;
       const asOfSecs = Math.floor(new Date(`${asOf}T00:00:00Z`).getTime() / 1000);
       setStatus({ kind: "busy", msg: "Simulating…" });
       const xdr = await contracts.preparePostReserve({
@@ -116,7 +121,8 @@ export default function ReportPage() {
     address &&
     tier &&
     sac &&
-    amount &&
+    amountCheck.kind === "valid" &&
+    !preview?.warning &&
     docUri &&
     /^[0-9a-f]{64}$/.test(docHash) &&
     status.kind !== "busy";
@@ -174,8 +180,49 @@ export default function ReportPage() {
             onChange={(e) => setAmount(e.target.value)}
             placeholder="1,020,000"
             required
+            aria-invalid={amountCheck.kind === "invalid"}
+            aria-describedby={amountCheck.kind === "invalid" ? "amount-error" : undefined}
           />
+          {amountCheck.kind === "invalid" ? (
+            <span className="field-error" id="amount-error" role="alert">
+              {amountCheck.message}
+            </span>
+          ) : null}
         </label>
+        <div
+          aria-live="polite"
+          style={{
+            display: "grid",
+            gap: 8,
+            // Sit the preview just under the amount input, but keep the normal
+            // field gap while there is nothing to show.
+            marginTop: amountCheck.kind === "valid" ? -8 : undefined,
+          }}
+        >
+          {amountCheck.kind === "valid" ? (
+            amountCheck.preview ? (
+              <>
+                <p className="sub" id="amount-preview" style={{ margin: 0 }}>
+                  This reads as <strong>{amountCheck.preview.percent}</strong> of the current supply
+                  of{" "}
+                  {selected?.supply
+                    ? `${formatUnits(selected.supply.amount)} ${selected.code}`
+                    : "the asset"}
+                  .
+                </p>
+                {amountCheck.preview.warning ? (
+                  <p className="notice notice-warn" style={{ margin: 0 }}>
+                    {amountCheck.preview.warning}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <p className="notice notice-info" style={{ margin: 0 }}>
+                {noSupplyNote(selected)}
+              </p>
+            )
+          ) : null}
+        </div>
         <label>
           As of (UTC date)
           <span className="hint">
@@ -245,6 +292,18 @@ export default function ReportPage() {
       </div>
     </>
   );
+}
+
+/**
+ * Why there is no ratio to preview: the form divides by the latest supply
+ * snapshot, and neither a missing snapshot nor an empty one can be divided by.
+ */
+function noSupplyNote(asset: AssetView | undefined): string {
+  if (!asset) return "No asset selected yet, so there is no supply to compare against.";
+  if (asset.supply) {
+    return `${asset.code}'s latest supply snapshot is zero, so there is no ratio to preview. With nothing circulating, reserves have nothing to cover.`;
+  }
+  return `No supply snapshot for ${asset.code} yet, so there is no ratio to preview. The supply poster records one for each listed asset; the preview appears once it lands.`;
 }
 
 function friendly(e: unknown, fallback: string): string {
