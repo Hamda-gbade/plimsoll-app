@@ -106,7 +106,7 @@ export default function ReportPage() {
         docHash,
         docUri,
       });
-      setStatus({ kind: "busy", msg: "Waiting for your signature in Freighter…" });
+      setStatus({ kind: "busy", msg: "Waiting for your signature…" });
       const signed = await signXdr(xdr, address);
       setStatus({ kind: "busy", msg: "Submitting…" });
       const hash = await contracts.submit(signed);
@@ -155,7 +155,7 @@ export default function ReportPage() {
           </div>
         ) : (
           <button type="button" onClick={connect}>
-            Connect Freighter
+            Connect wallet
           </button>
         )}
       </div>
