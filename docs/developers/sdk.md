@@ -33,9 +33,13 @@ formatUnits(cov!.reserves);    // "1,020,000"
 | `coverage(sac, minTier)` | `Coverage \| null` |
 | `isCovered(sac, minBps, maxAgeSeconds, minTier)` | `boolean` |
 | `getReporter(address)` | `ReporterInfo \| null` |
+| `registryAdmin()` | the registry's admin address |
+| `ledgerAdmin()` | the coverage ledger's admin address |
 | `prepareListAsset(source, sac)` | unsigned XDR |
 | `prepareDeploySac(source, code, issuer)` | unsigned XDR |
 | `preparePostReserve({ reporter, sac, amount, asOf, docHash, docUri })` | unsigned XDR |
+| `prepareSetReporter(admin, reporter, role, name)` | unsigned XDR; `name` must be 1–64 UTF-8 bytes |
+| `prepareRevoke(admin, reporter)` | unsigned XDR |
 | `submit(signedXdr)` | transaction hash, after it succeeds |
 
 A failed simulation throws `ContractCallError`. For contract errors its `code`
@@ -81,6 +85,26 @@ const { signedTxXdr } = await signTransaction(xdr, {
   address: issuer,
 });
 const hash = await plimsoll.submit(signedTxXdr);
+```
+
+### Managing reporters
+
+Only the registry admin can set or revoke a reporter. Pass the admin address as
+the transaction source and have that account sign the prepared XDR. Names are
+checked locally to match the contract: 1 to 64 UTF-8 bytes.
+
+```ts
+import { Role } from "@plimsoll/sdk";
+
+const admin = await plimsoll.registryAdmin();
+const xdr = await plimsoll.prepareSetReporter(admin, reporter, Role.Auditor, "Acme Audit LLP");
+const { signedTxXdr } = await signTransaction(xdr, {
+  networkPassphrase: TESTNET.networkPassphrase,
+  address: admin,
+});
+const hash = await plimsoll.submit(signedTxXdr);
+
+const revokeXdr = await plimsoll.prepareRevoke(admin, reporter);
 ```
 
 ### `IndexerClient`
