@@ -126,9 +126,22 @@ const revokeXdr = await plimsoll.prepareRevoke(admin, reporter);
 | `formatUnits(10200000000000n)` | `"1,020,000"` |
 | `parseUnits("1.5")` | `15000000n` |
 | `bpsToPercent(9990)` | `"99.90%"` |
-| `coverageStatus(bps, ageSeconds)` | `"covered" \| "under" \| "stale" \| "unknown"` |
+| `coverageStatus(bps, ages, maxAgeSeconds?, minBps?)` | `"covered" \| "under" \| "stale" \| "unknown"` |
+| `DEFAULT_MAX_AGE_SECONDS` | freshness default, 7 days |
+| `DEFAULT_MIN_BPS` | ratio default, 10,000 (100%) |
 | `sacAddress(code, issuer, passphrase)` | the asset's SAC address |
 | `sha256Hex(bytes)` / `matchesHash(bytes, hex)` | document checks |
+
+`coverageStatus` defaults `maxAgeSeconds` to `DEFAULT_MAX_AGE_SECONDS` and
+`minBps` to `DEFAULT_MIN_BPS` (100%), so its default behaviour is unchanged. A
+consumer that requires 102% can pass `10_200`; one that accepts 98% can pass
+`9_800`. `unknown` means a report or ratio is missing; `stale` means the report
+or supply snapshot is older than the window, whatever the ratio.
+
+```ts
+coverageStatus(10_100, { report: 60 }, DEFAULT_MAX_AGE_SECONDS, 10_200); // "under"
+coverageStatus(9_900, { report: 60 }, DEFAULT_MAX_AGE_SECONDS, 9_800); // "covered"
+```
 
 ## Tests
 
