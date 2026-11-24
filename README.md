@@ -52,6 +52,7 @@ Because it is a static export, it runs on any static host.
 | `/` | Every listed asset with its coverage ratio, signer tier and report age |
 | `/asset/?sac=…` | Reports per tier, supply breakdown, stellar.toml data, and three in-browser checks: live `coverage` call, document hash, breakdown hash |
 | `/report/` | Connect Freighter, hash a document locally, sign and post a reserve report. Shows the tier you will get before you sign. |
+| `/reporters/` | Registered auditors, transcribers and supply posters, grouped by role, with explorer links and last update |
 | `/list/` | List any classic asset; deploys its Stellar Asset Contract first if it has none |
 | `/integrate/` | How to call `is_covered` from Rust, TypeScript and the CLI |
 
