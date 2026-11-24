@@ -68,7 +68,7 @@ export default function ListPage() {
     const source = await connectWallet();
     setStep({ kind: "busy", msg: `Preparing ${label}…` });
     const xdr = await prepare(source);
-    setStep({ kind: "busy", msg: "Waiting for your signature in Freighter…" });
+    setStep({ kind: "busy", msg: "Waiting for your signature…" });
     const signed = await signXdr(xdr, source);
     setStep({ kind: "busy", msg: "Submitting…" });
     return contracts.submit(signed);
