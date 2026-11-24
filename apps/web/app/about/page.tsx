@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { config } from "@/lib/config";
 
 export const metadata: Metadata = { title: "How it works" };
 
@@ -62,6 +63,10 @@ export default function AboutPage() {
           </tbody>
         </table>
       </div>
+      <p>
+        The auditors, transcribers and supply posters currently registered on {config.networkName}{" "}
+        are listed on the <Link href="/reporters/">reporter registry page</Link>.
+      </p>
       <p className="mt">
         Every report records the SHA-256 of its source document. If the document changes after the
         fact, the hash no longer matches, and the asset page shows it.
