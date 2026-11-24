@@ -8,12 +8,11 @@
     "build": "next build && node scripts/apply-csp.mjs",
     "test": "vitest run",
     "start": "npx serve out",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@creit.tech/stellar-wallets-kit": "2.8.0",
     "@plimsoll/sdk": "0.1.0",
-    "@stellar/freighter-api": "6.0.1",
     "@stellar/stellar-sdk": "17.2.1",
     "next": "16.3.8",
     "react": "19.3.0",
