@@ -3,7 +3,7 @@
 import { safeHref } from "@/lib/safe-href";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import {
   Tier,
   ago,
@@ -27,6 +27,7 @@ import {
   Stat,
   StatusPill,
   TierPill,
+  copyToClipboard,
   nowSecs,
   ratioText,
   statusOf,
@@ -707,19 +708,37 @@ function IssuerToml({ asset }: { asset: AssetView }) {
   );
 }
 
+type CopyState = "idle" | "copied" | "failed";
+
 function EmbedBadge({ sac }: { sac: string }) {
-  const [copied, setCopied] = useState(false);
+  const [state, setState] = useState<CopyState>("idle");
+  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const snippetRef = useRef<HTMLPreElement>(null);
   const origin = typeof window !== "undefined" ? window.location.origin : "";
   const snippet = embedCode(sac, { origin, basePath: config.basePath });
 
+  useEffect(
+    () => () => {
+      if (timeout.current) clearTimeout(timeout.current);
+    },
+    [],
+  );
+
   const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(snippet);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
+    const copied = await copyToClipboard(snippet);
+    setState(copied ? "copied" : "failed");
+    if (timeout.current) clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => setState("idle"), 2000);
+    if (copied) return;
+    // No clipboard API (or permission denied): select the snippet in place so
+    // the reader can copy it with the keyboard instead.
+    const pre = snippetRef.current;
+    const selection = typeof window === "undefined" ? null : window.getSelection();
+    if (!pre || !selection) return;
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    selection.removeAllRanges();
+    selection.addRange(range);
   };
 
   return (
@@ -728,10 +747,17 @@ function EmbedBadge({ sac }: { sac: string }) {
       <p className="sub">
         Copy this snippet to show a live reserve-coverage badge that links back to this asset page.
       </p>
-      <pre style={{ overflowX: "auto", margin: "8px 0" }}>{snippet}</pre>
+      <pre ref={snippetRef} tabIndex={0} style={{ overflowX: "auto", margin: "8px 0" }}>{snippet}</pre>
       <button type="button" className="secondary" onClick={copy}>
-        {copied ? "Copied" : "Copy embed code"}
+        {state === "copied" ? "Copied!" : "Copy embed code"}
       </button>
+      <p className="sub" role="status" aria-live="polite" style={{ margin: "8px 0 0" }}>
+        {state === "copied"
+          ? "Snippet copied to the clipboard."
+          : state === "failed"
+            ? "Copying is unavailable here. The snippet is selected above — press Ctrl/Cmd+C to copy it."
+            : null}
+      </p>
     </section>
   );
 }
