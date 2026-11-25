@@ -19,6 +19,7 @@ import {
   type SupplyBreakdown,
   type TomlCheck,
 } from "@plimsoll/sdk";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import {
   CopyButton,
   Gauge,
@@ -127,11 +128,15 @@ function AssetDetail() {
 
   return (
     <>
+      <Breadcrumb
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Assets", href: "/" },
+          { label: asset.code },
+        ]}
+      />
       <p className="sub">
-        <Link href="/">All assets</Link> / {asset.code}{" "}
-        <Link href={`/asset/history/?sac=${asset.sac}`} style={{ marginLeft: 8 }}>
-          History
-        </Link>
+        <Link href={`/asset/history/?sac=${asset.sac}`}>History</Link>
       </p>
       <div className="spread">
         <div>
